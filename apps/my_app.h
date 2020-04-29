@@ -8,6 +8,7 @@
 #include<mylibrary/leaderboard.h>
 #include <mylibrary/tetrominos.h>
 #include <mylibrary/location.h>
+#include<cinder/audio/audio.h>
 
 namespace myapp {
 
@@ -28,11 +29,16 @@ class MyApp : public cinder::app::App {
   int GetWestmostPoint(int tetromino);
   int GetEastmostPoint(int tetromino);
   int GetSouthernmostPoint(int tetromino);
+  int countLines();
   int randInt;
   bool isBottom = false;
   bool isCollided = false;
   bool isHitSide;
   int matrixOccupied[10][20];
+  int fullLines[20];
+  cinder::audio::VoiceRef themeSong;
+  void deleteLine(int pY);
+  void DeletePossibleLines();
   std::chrono::time_point<std::chrono::system_clock> last_time_;
   mylibrary::LeaderBoard leader_board_;
   mylibrary::Tetromino tetromino_;

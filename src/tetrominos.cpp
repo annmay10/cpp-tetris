@@ -98,15 +98,20 @@ void Tetromino::setPivots(int pPieceType) {
     }
   }
 }
-void Tetromino::RotateTetromino(int pPieceType) {
-  xBrickCenter = xPivot + yPivot - yBrickCenter;
-  yBrickCenter = yPivot - xPivot + xBrickCenter;
-  for (int x = 0; x < 4; x++) {
-    for (int y = 0; y < 4; y++) {
-      if (mPieces[pPieceType][x][y] == 1) {
-        xBrickCenter = xPivot + x + xBrickCenter;
-        yBrickCenter = yPivot + y + yBrickCenter;
-      }
+void Tetromino::RotateTetromino(int pPieceType)
+{
+  int N = 4;
+  // Traverse each cycle
+  for (int x = 0; x < 4 / 2; x++) {
+    for (int y = x; y < 4 - x - 1; y++) {
+
+      // Swap elements of each cycle
+      // in clockwise direction
+      int temp = mPieces[pPieceType][x][y];
+      mPieces[pPieceType][x][y] = mPieces[pPieceType][4 - 1 - y][x];
+      mPieces[pPieceType][N - 1 - y][x] = mPieces[pPieceType][N - 1 - x][N - 1 - y];
+      mPieces[pPieceType][N - 1 - x][N - 1 - y] = mPieces[pPieceType][y][N - 1 - x];
+      mPieces[pPieceType][y][N - 1 - x] = temp;
     }
   }
 }

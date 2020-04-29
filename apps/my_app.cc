@@ -6,6 +6,7 @@
 #include<mylibrary/location.h>
 #include<cinder/gl/gl.h>
 #include <cinder/Rand.h>
+#include<cinder/audio/audio.h>
 #include<mylibrary/tetrominos.h>
 
 namespace myapp {
@@ -25,6 +26,11 @@ void MyApp::setup() {
     for (int j = 0; j < 20; j++) {
       matrixOccupied[i][j] = 0;
     }
+  }
+  cinder::audio::SourceFileRef sourceFile = cinder::audio::load( cinder::app::loadAsset( "tetris.mp3" ) );
+  themeSong = cinder::audio::Voice::create( sourceFile );
+  if (!themeSong->isPlaying()) {
+    themeSong->start();
   }
 }
 
@@ -50,6 +56,10 @@ void MyApp::update() {
   if (elapsed_time >= long(1)) {
     DownwardMovement();
     last_time_ = time;
+  }
+  DeletePossibleLines();
+  if (!themeSong->isPlaying()) {
+    themeSong->start();
   }
 
 }
@@ -236,23 +246,53 @@ void MyApp::DownwardMovement() {
         }
       }
     }
+
   }
 }
-/*
-int MyApp::clearLines() {
-  int count_line = 0;
+
+int MyApp::countLines() {
+  int count_per_line = 0;
   int count_lines = 0;
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < 20; j++) {
       if (matrixOccupied[i][j] != 0) {
-        count_line += 1;
+        count_per_line += 1;
       }
     }
-    if (count_line == 20) {
-
+    if (count_per_line == 20) {
+      count_lines += 1;
+      fullLines[i] = 1;
     }
   }
-}*/
+  return count_lines;
+}
+
+void MyApp::deleteLine(int pY) {
+  int BOARD_WIDTH = 10;
+  for (int j = pY; j > 0; j--)
+  {
+    for (int i = 0; i < BOARD_WIDTH; i++)
+    {
+      matrixOccupied[i][j] = matrixOccupied[i][j-1];
+    }
+  }
+}
+void MyApp::DeletePossibleLines ()
+{
+  int BOARD_HEIGHT = 20;
+  int BOARD_WIDTH = 10;
+  for (int j = 0; j < BOARD_HEIGHT; j++)
+  {
+    int i = 0;
+    while (i < BOARD_WIDTH)
+    {
+      if (matrixOccupied[i][j] == 0) break;
+      i++;
+    }
+
+    if (i == BOARD_WIDTH) deleteLine (j);
+  }
+}
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_DOWN: {
@@ -260,7 +300,15 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_UP: {
-      tetromino_.RotateTetrominoCounterClockwise(randInt);
+      tetromino_.RotateTetromino(randInt);
+      int tile_size = 40;
+      int eastmost = GetEastmostPoint(randInt);
+      int westmost = GetWestmostPoint(randInt);
+      int kLimitRight = 400 - ((eastmost + 1) * tile_size);
+      int kLimitLeft = (0 - ((westmost) * tile_size));
+      if (loc.Row() > kLimitRight || loc.Row() < kLimitLeft) {
+        tetromino_.RotateTetrominoCounterClockwise(randInt);
+      }
       break;
     }
     case KeyEvent::KEY_RIGHT: {
@@ -270,7 +318,6 @@ void MyApp::keyDown(KeyEvent event) {
       if (loc.Row() < kLimit && (!DetectRightwardCollision(randInt))) {
         loc.row_ += tile_size;
       }
-
       break;
     }
     case KeyEvent::KEY_LEFT: {
