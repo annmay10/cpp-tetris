@@ -1,24 +1,47 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
 #include "my_app.h"
-
+#include <cinder/Font.h>
+#include <cinder/Text.h>
 #include <cinder/app/App.h>
 #include<mylibrary/location.h>
 #include<cinder/gl/gl.h>
 #include <cinder/Rand.h>
 #include<cinder/audio/audio.h>
 #include<mylibrary/tetrominos.h>
+#include <string>
 
 namespace myapp {
 using cinder::app::KeyEvent;
 const char kDbPath[] = "tetris.db";
 
-using cinder::app::KeyEvent;
+#if defined(CINDER_COCOA_TOUCH)
+const char kNormalFont[] = "Arial";
+const char kBoldFont[] = "Arial-BoldMT";
+const char kDifferentFont[] = "AmericanTypewriter";
+#elif defined(CINDER_LINUX)
+const char kNormalFont[] = "Arial Unicode MS";
+const char kBoldFont[] = "Arial Unicode MS";
+const char kDifferentFont[] = "Purisa";
+#else
+const char kNormalFont[] = "Arial";
+const char kBoldFont[] = "Arial Bold";
+const char kDifferentFont[] = "Papyrus";
+#endif
 
+using cinder::app::KeyEvent;
+using cinder::Color;
+using cinder::ColorA;
+using cinder::TextBox;
 MyApp::MyApp() :
     leader_board_{cinder::app::getAssetPath(kDbPath).string()},
     randInt{cinder::Rand::randInt(0, 7)},
-    matrixOccupied{} {}
+    matrixOccupied{},
+    linesCleared{0},
+    score{0},
+    level{1},
+    linesClearedTotal{0}
+    {}
 
 void MyApp::setup() {
   randInt = cinder::Rand::randInt(0, 7);
@@ -34,15 +57,16 @@ void MyApp::setup() {
   }
 }
 
+
 void MyApp::update() {
   if (isBottom) {
     randInt = cinder::Rand::randInt(0, 7);
-    loc = mylibrary::Location(0, 0);
+    loc = mylibrary::Location(0, 0.0);
     isBottom = false;
   }
   if (isCollided) {
     randInt = cinder::Rand::randInt(0, 7);
-    loc = mylibrary::Location(0, 0);
+    loc = mylibrary::Location(0, 0.0);
     isCollided = false;
   }
   const auto time = std::chrono::system_clock::now();
@@ -53,13 +77,47 @@ void MyApp::update() {
           .count();
   //Converts milliseconds to seconds
   elapsed_time /= 1000.0;
-  if (elapsed_time >= long(1)) {
+  long dropDelay = long(2.0) - (0.1 * level);
+  if (elapsed_time >= dropDelay) {
     DownwardMovement();
     last_time_ = time;
   }
   DeletePossibleLines();
+  if (linesCleared == 1) {
+    score += (100 * level);
+    cinder::audio::SourceFileRef sourceFile = cinder::audio::load( cinder::app::loadAsset( "single_line.wav" ) );
+    singleSound = cinder::audio::Voice::create( sourceFile );
+    if (!singleSound->isPlaying()) {
+      singleSound->start();
+    }
+  } else if (linesCleared == 2) {
+    score += (400 * level);
+    cinder::audio::SourceFileRef sourceFile = cinder::audio::load( cinder::app::loadAsset( "double_line.wav" ) );
+    doubleSound = cinder::audio::Voice::create( sourceFile );
+    if (!doubleSound->isPlaying()) {
+      doubleSound->start();
+    }
+  } else if (linesCleared == 3) {
+    score += (900 * level);
+    cinder::audio::SourceFileRef sourceFile = cinder::audio::load( cinder::app::loadAsset( "triple_line.wav" ) );
+    tripleSound = cinder::audio::Voice::create( sourceFile );
+    if (!tripleSound->isPlaying()) {
+      tripleSound->start();
+    }
+  } else if (linesCleared == 4) {
+    score += (2500 * level);
+    cinder::audio::SourceFileRef sourceFile = cinder::audio::load(cinder::app::loadAsset("tetris_cleared.wav"));
+    tetrisSound = cinder::audio::Voice::create(sourceFile);
+    if (!tetrisSound->isPlaying()) {
+      tetrisSound->start();
+    }
+  }
   if (!themeSong->isPlaying()) {
     themeSong->start();
+  }
+  linesCleared = 0;
+  if (linesClearedTotal % 30 == 0 && (linesClearedTotal != 0)) {
+    level += 1;
   }
 
 }
@@ -80,7 +138,55 @@ void MyApp::draw() {
   if (!isCollided) {
     DrawCurrent();
   }
+  DrawScore();
+  DrawLevel();
+  DrawLinesCleared();
 }
+
+void PrintText(const std::string& text, const Color& color, const cinder::ivec2& size,
+               const cinder::vec2& loc) {
+  cinder::gl::color(color);
+
+  auto box = cinder::TextBox()
+      .alignment(cinder::TextBox::CENTER)
+      .font(cinder::Font(kNormalFont, 30))
+      .size(size)
+      .color(color)
+      .backgroundColor(ColorA(0, 0, 0, 0))
+      .text(text);
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
+}
+
+void MyApp::DrawScore() const {
+  const std::string scoreText = "Score :" + std::to_string(score);
+  const Color color = {1, 1, 1};
+  const cinder::ivec2 size = {120, 50};
+  const cinder::vec2 location = {500, 500};
+
+  PrintText(scoreText, color, size, location);
+}
+void MyApp::DrawLevel() const {
+  const std::string scoreText = "Level :" + std::to_string(level);
+  const Color color = {1, 1, 1};
+  const cinder::ivec2 size = {120, 50};
+  const cinder::vec2 location = {500, 600};
+
+  PrintText(scoreText, color, size, location);
+}
+void MyApp::DrawLinesCleared() const {
+  const std::string scoreText = "Lines :" + std::to_string(linesClearedTotal);
+  const Color color = {1, 1, 1};
+  const cinder::ivec2 size = {120, 50};
+  const cinder::vec2 location = {500, 700};
+
+  PrintText(scoreText, color, size, location);
+}
+
 void MyApp::DrawCurrent() {
   int xBlockSize = 4;
   int yBlockSize = 4;
@@ -289,8 +395,12 @@ void MyApp::DeletePossibleLines ()
       if (matrixOccupied[i][j] == 0) break;
       i++;
     }
+    if (i == BOARD_WIDTH) {
+      deleteLine (j);
+      linesCleared++;
+      linesClearedTotal += 1;
+    }
 
-    if (i == BOARD_WIDTH) deleteLine (j);
   }
 }
 void MyApp::keyDown(KeyEvent event) {
