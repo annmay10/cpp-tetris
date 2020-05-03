@@ -9,10 +9,10 @@ namespace mylibrary {
 char mPieces[7][4][4] = {
     //I
     {
-        {0, 1, 0, 0},
-        {0, 1, 0, 0},
-        {0, 1, 0, 0},
-        {0, 1, 0, 0}
+        {0, 0, 0, 0},
+        {1, 1, 1, 1},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
     },
     //J
     {
@@ -138,6 +138,45 @@ void Tetromino::RotateTetrominoCounterClockwise(int pPieceType)
       mPieces[pPieceType][4 - 1 - y][x] = temp;
     }
   }
+}
+int Tetromino::GetSouthernmostPoint(int tetromino) {
+  int southernmost = 0;
+  for (int x = 0; x < 4; x++) {
+    for (int y = 0; y < 4; y++) {
+      if (GetTetrominoType(tetromino, x, y) == 1) {
+        if (y > southernmost) {
+          southernmost = y;
+        }
+      }
+    }
+  }
+  return southernmost;
+}
+int Tetromino::GetWestmostPoint(int tetromino) {
+  int westmost = 3;
+  for (int x = 0; x < 4; x++) {
+    for (int y = 0; y < 4; y++) {
+      if (GetTetrominoType(tetromino, x, y) == 1) {
+        if (x < westmost) {
+          westmost = x;
+        }
+      }
+    }
+  }
+  return westmost;
+}
+int Tetromino::GetEastmostPoint(int tetromino) {
+  int eastmost = 0;
+  for (int x = 0; x < 4; x++) {
+    for (int y = 0; y < 4; y++) {
+      if (GetTetrominoType(tetromino, x, y) == 1) {
+        if (x > eastmost) {
+          eastmost = x;
+        }
+      }
+    }
+  }
+  return eastmost;
 }
 
 

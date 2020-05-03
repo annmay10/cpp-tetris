@@ -9,9 +9,14 @@
 #include <mylibrary/tetrominos.h>
 #include <mylibrary/location.h>
 #include<cinder/audio/audio.h>
+#include<mylibrary/board.h>
 
 namespace myapp {
-
+enum class GameState {
+  kMenu,
+  kPlaying,
+  kGameOver,
+};
 class MyApp : public cinder::app::App {
  public:
   MyApp();
@@ -20,41 +25,40 @@ class MyApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
  private:
-  bool DetectDownwardCollision(int tetromino);
-  bool DetectLeftwardCollision(int tetromino);
-  bool DetectRightwardCollision(int tetromino);
   void DownwardMovement();
   void DrawOccupied();
   void DrawCurrent();
   void DrawScore() const;
   void DrawLevel() const;
   void DrawLinesCleared() const;
-  int GetWestmostPoint(int tetromino);
-  int GetEastmostPoint(int tetromino);
-  int GetSouthernmostPoint(int tetromino);
-  int countLines();
-  int randInt;
-  int linesCleared;
-  int linesClearedTotal;
+  void DrawNext();
+  void DrawGameOver();
+  void DrawBackground();
+  void DrawMenu();
+  void UpdateScore();
+  void HardDrop();
+  int current;
+  int next;
   bool isBottom = false;
   bool isCollided = false;
-  bool isHitSide;
-  int matrixOccupied[10][20];
-  int fullLines[20];
+  GameState state_;
+  bool flag;
+  std::vector<mylibrary::Player> top_players_;
+  std::vector<mylibrary::Player> current_player_scores_;
   int score;
-  int level;
+  size_t level;
+  const std::string player_name_;
   cinder::audio::VoiceRef themeSong;
   cinder::audio::VoiceRef singleSound;
   cinder::audio::VoiceRef doubleSound;
   cinder::audio::VoiceRef tripleSound;
   cinder::audio::VoiceRef tetrisSound;
-  void deleteLine(int pY);
-  void DeletePossibleLines();
+  cinder::audio::VoiceRef levelSound;
   std::chrono::time_point<std::chrono::system_clock> last_time_;
   mylibrary::LeaderBoard leader_board_;
   mylibrary::Tetromino tetromino_;
   mylibrary::Location loc = mylibrary::Location(80.0,0.0);
-  mylibrary::Location loc2 = mylibrary::Location(80.0,0.0);
+  mylibrary::Board board_;
 };
 
 }  // namespace myapp

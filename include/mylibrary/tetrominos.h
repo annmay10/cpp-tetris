@@ -19,6 +19,10 @@ class Tetromino {
   float GetColorType(int index, int rbg);
   void RotateTetromino(int pPieceType);
   void RotateTetrominoCounterClockwise(int pPieceType);
+  int GetWestmostPoint(int tetromino);
+  int GetEastmostPoint(int tetromino);
+  int GetSouthernmostPoint(int tetromino);
+
 };
 }
 
