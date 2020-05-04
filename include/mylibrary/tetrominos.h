@@ -8,11 +8,6 @@
 #include <cinder/Color.h>
 namespace mylibrary {
 class Tetromino {
- private:
-  int xBrickCenter;
-  int yBrickCenter;
-  int xPivot;
-  int yPivot;
  public:
   void setPivots(int pPieceType);
   int GetTetrominoType(int pPieceType, int pX, int pY);

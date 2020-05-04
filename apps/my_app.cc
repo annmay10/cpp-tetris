@@ -54,11 +54,6 @@ void MyApp::setup() {
   cinder::Rand::randomize();
   current = cinder::Rand::randInt(0, 7);
   next = cinder::Rand::randInt(0,7);
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 20; j++) {
-      board_.SetBoardArray(i, j, 0);
-    }
-  }
   cinder::audio::SourceFileRef sourceFile = cinder::audio::load( cinder::app::loadAsset( "tetris.mp3" ) );
   themeSong = cinder::audio::Voice::create( sourceFile );
   if (!themeSong->isPlaying()) {
@@ -342,7 +337,7 @@ void MyApp::DownwardMovement() {
   int southernmost = tetromino_.GetSouthernmostPoint(current);
   int kLimit = 800 - ((southernmost + 1) * tile_size);
   if (loc.Col() < kLimit && (!board_.DetectDownwardCollision(current, loc))) {
-    loc.col_ += 40;
+    loc.IncrementCol();
   } else if (loc.Col() >= kLimit) {
     isBottom = true;
     for (int x = 0; x < 4; x++) {
@@ -401,7 +396,7 @@ void MyApp::keyDown(KeyEvent event) {
       int eastmost = tetromino_.GetEastmostPoint(current);
       int kLimit = 400 - ((eastmost + 1) * tile_size);
       if (loc.Row() < kLimit && (!board_.DetectRightwardCollision(current, loc))) {
-        loc.row_ += tile_size;
+        loc.IncrementRow();
       }
       break;
     }
@@ -410,7 +405,7 @@ void MyApp::keyDown(KeyEvent event) {
       int westmost = tetromino_.GetWestmostPoint(current);
       int kLimit = (0 - ((westmost) * tile_size));
       if (loc.Row() > kLimit && (!board_.DetectLeftwardCollision(current, loc))) {
-        loc.row_ -= tile_size;
+        loc.DecrementRow();
       }
       break;
     }

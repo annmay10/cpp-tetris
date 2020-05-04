@@ -57,20 +57,6 @@ char mPieces[7][4][4] = {
         {0, 0, 0, 0}
     }
 };
-int pivots[6][2] {
-    //I
-    {1,1},
-    //J
-    {2,1},
-    //J-mirrored
-    {2,1},
-    //N
-    {2,1},
-    //N-mirrored
-    {2,1},
-    //T
-    {1,2}
-};
 float colors[7][3] {
     {0,1,1},
     {1,0.5,0},
@@ -85,18 +71,6 @@ int Tetromino::GetTetrominoType(int pPieceType, int pX, int pY) {
 }
 float Tetromino::GetColorType(int index, int rbg) {
   return colors[index][rbg];
-}
-void Tetromino::setPivots(int pPieceType) {
-  xPivot = pivots[pPieceType][1];
-  yPivot = pivots[pPieceType][1];
-  for (int x = 0; x < 4; x++) {
-    for (int y = 0; y < 4; y++) {
-      if (mPieces[pPieceType][x][y] == 1) {
-        xBrickCenter = xPivot + x;
-        yBrickCenter = yPivot + y;
-      }
-    }
-  }
 }
 void Tetromino::RotateTetromino(int pPieceType)
 {

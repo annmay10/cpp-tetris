@@ -10,5 +10,14 @@ int Location::Row() const {
 int Location::Col() const {
   return col_;
 }
+void Location::IncrementRow() {
+  row_ += 40;
+}
+void Location::DecrementRow() {
+  row_ -= 40;
+}
+void Location::IncrementCol() {
+  col_ += 40;
+}
 }
 

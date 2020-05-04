@@ -5,12 +5,16 @@
 #define FINALPROJECT_INCLUDE_MYLIBRARY_LOCATION_H_
 namespace mylibrary {
 class Location{
+ private:
+  int col_;
+  int row_;
  public :
   Location(int row, int col);
   int Row() const;
   int Col() const;
-  int col_;
-  int row_;
+  void IncrementCol();
+  void IncrementRow();
+  void DecrementRow();
 };
 }
 #endif //FINALPROJECT_INCLUDE_MYLIBRARY_LOCATION_H_

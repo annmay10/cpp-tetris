@@ -9,7 +9,16 @@ Board::Board() {
   height = 20;
   linesCleared = 0;
   linesClearedTotal = 0;
+  InstantiateBoard();
 }
+void Board::InstantiateBoard() {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
+      boardArray[i][j] = 0;
+    }
+  }
+}
+
 int Board::GetBoardArray(int i, int j) {
   return boardArray[i][j];
 }

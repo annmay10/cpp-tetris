@@ -13,6 +13,7 @@ class Board {
   int boardArray[10][20];
   Tetromino tetromino_;
   void deleteLine(int pY);
+  void InstantiateBoard();
  public:
   void DeletePossibleLines();
   bool DetectDownwardCollision(int tetromino, Location loc);
