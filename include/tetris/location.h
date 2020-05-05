@@ -1,9 +1,9 @@
 //
 // Created by Annmay on 24/04/20.
 //
-#ifndef FINALPROJECT_INCLUDE_MYLIBRARY_LOCATION_H_
-#define FINALPROJECT_INCLUDE_MYLIBRARY_LOCATION_H_
-namespace mylibrary {
+#ifndef FINALPROJECT_INCLUDE_TETRIS_LOCATION_H_
+#define FINALPROJECT_INCLUDE_TETRIS_LOCATION_H_
+namespace tetris {
 class Location{
  private:
   int col_;
@@ -17,4 +17,4 @@ class Location{
   void DecrementRow();
 };
 }
-#endif //FINALPROJECT_INCLUDE_MYLIBRARY_LOCATION_H_
+#endif //FINALPROJECT_INCLUDE_TETRIS_LOCATION_H_

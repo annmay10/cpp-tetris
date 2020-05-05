@@ -2,14 +2,14 @@
 // Created by Annmay on 22/04/20.
 //
 
-#ifndef FINALPROJECT_INCLUDE_LEADERBOARD_H_
-#define FINALPROJECT_INCLUDE_LEADERBOARD_H_
+#ifndef FINALPROJECT_INCLUDE_TETRIS_LEADERBOARD_H_
+#define FINALPROJECT_INCLUDE_TETRIS_LEADERBOARD_H_
 #include "leaderboard.h"
-#include<mylibrary/player.h>
+#include<tetris/player.h>
 #include "../cmake-build-debug/_deps/sqlite-modern-cpp-src/hdr/sqlite_modern_cpp.h"
 #include<string>
 #include <vector>
-namespace mylibrary {
+namespace tetris {
 class LeaderBoard {
  public:
   explicit LeaderBoard(const std::string& db_path);
@@ -21,4 +21,4 @@ class LeaderBoard {
 };
 }
 
-#endif //FINALPROJECT_INCLUDE_LEADERBOARD_H_
+#endif //FINALPROJECT_INCLUDE_TETRIS_LEADERBOARD_H_

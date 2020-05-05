@@ -2,14 +2,13 @@
 // Created by Annmay on 22/04/20.
 //
 
-#ifndef FINALPROJECT_INCLUDE_MYLIBRARY_TETROMINOS_H_
-#define FINALPROJECT_INCLUDE_MYLIBRARY_TETROMINOS_H_
+#ifndef FINALPROJECT_INCLUDE_TETRIS_TETROMINOS_H_
+#define FINALPROJECT_INCLUDE_TETRIS_TETROMINOS_H_
 
 #include <cinder/Color.h>
-namespace mylibrary {
+namespace tetris {
 class Tetromino {
  public:
-  void setPivots(int pPieceType);
   int GetTetrominoType(int pPieceType, int pX, int pY);
   float GetColorType(int index, int rbg);
   void RotateTetromino(int pPieceType);
@@ -21,4 +20,4 @@ class Tetromino {
 };
 }
 
-#endif //FINALPROJECT_INCLUDE_MYLIBRARY_TETROMINOS_H_
+#endif //TETRIS_INCLUDE_TETRIS_TETROMINOS_H_

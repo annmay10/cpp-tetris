@@ -5,60 +5,61 @@
 
 #include <cinder/app/App.h>
 #include<cinder/Rand.h>
-#include<mylibrary/leaderboard.h>
-#include <mylibrary/tetrominos.h>
-#include <mylibrary/location.h>
+#include<tetris/leaderboard.h>
+#include <tetris/tetrominos.h>
+#include <tetris/location.h>
 #include<cinder/audio/audio.h>
-#include<mylibrary/board.h>
+#include<tetris/board.h>
 
-namespace myapp {
+namespace tetrisapp {
 enum class GameState {
   kMenu,
   kPlaying,
   kGameOver,
 };
-class MyApp : public cinder::app::App {
+class TetrisApp : public cinder::app::App {
  public:
-  MyApp();
+  TetrisApp();
   void setup() override;
   void update() override;
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
  private:
+  void SetUpMusic();
   void DownwardMovement();
-  void DrawOccupied();
+  void DrawMenu() const;
   void DrawCurrent();
+  void DrawOccupied();
   void DrawScore() const;
   void DrawLevel() const;
   void DrawLinesCleared() const;
+  void DrawBackground() const;
   void DrawNext();
   void DrawGameOver();
-  void DrawBackground();
-  void DrawMenu();
-  void UpdateScore();
+  void PlayMusic();
   void HardDrop();
-  int current;
-  int next;
-  bool isBottom = false;
-  bool isCollided = false;
-  GameState state_;
-  bool flag;
-  std::vector<mylibrary::Player> top_players_;
-  std::vector<mylibrary::Player> current_player_scores_;
-  int score;
-  size_t level;
-  const std::string player_name_;
-  cinder::audio::VoiceRef themeSong;
-  cinder::audio::VoiceRef singleSound;
-  cinder::audio::VoiceRef doubleSound;
-  cinder::audio::VoiceRef tripleSound;
-  cinder::audio::VoiceRef tetrisSound;
-  cinder::audio::VoiceRef levelSound;
   std::chrono::time_point<std::chrono::system_clock> last_time_;
-  mylibrary::LeaderBoard leader_board_;
-  mylibrary::Tetromino tetromino_;
-  mylibrary::Location loc = mylibrary::Location(80.0,0.0);
-  mylibrary::Board board_;
+  tetris::LeaderBoard leader_board_;
+  tetris::Tetromino tetromino_;
+  tetris::Location location_ = tetris::Location(80.0,0.0);
+  tetris::Board board_;
+  const std::string player_name_;
+  GameState state_;
+  int current_;
+  int next_;
+  bool is_bottom_ = false;
+  bool is_collided_ = false;
+  bool flag_;
+  std::vector<tetris::Player> top_players_;
+  std::vector<tetris::Player> current_player_scores_;
+  size_t level_;
+  cinder::audio::VoiceRef theme_song_;
+  cinder::audio::VoiceRef single_sound_;
+  cinder::audio::VoiceRef double_sound_;
+  cinder::audio::VoiceRef triple_sound_;
+  cinder::audio::VoiceRef tetris_sound_;
+  cinder::audio::VoiceRef level_sound_;
+
 };
 
 }  // namespace myapp

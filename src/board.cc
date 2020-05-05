@@ -1,37 +1,50 @@
 // Copyright (c) 2020 [Your Name]. All rights reserved.
 
-#include <mylibrary/board.h>
-#include<mylibrary/location.h>
+#include <tetris/board.h>
+#include<tetris/location.h>
 
-namespace mylibrary {
+namespace tetris {
+int kTileSize = 40;
 Board::Board() {
-  width = 10;
-  height = 20;
-  linesCleared = 0;
-  linesClearedTotal = 0;
+  score_ = 0;
+  width_ = 10;
+  height_ = 20;
+  lines_cleared_ = 0;
+  lines_cleared_total_ = 0;
   InstantiateBoard();
 }
+void Board::UpdateScore(int level) {
+  if (lines_cleared_ == 1) {
+    score_ += (100 * level);
+  } else if (lines_cleared_ == 2) {
+    score_ += (400 * level);
+  } else if (lines_cleared_ == 3) {
+    score_ += (900 * level);
+  } else if (lines_cleared_ == 4) {
+    score_ += (2500 * level);
+  }
+}
 void Board::InstantiateBoard() {
-  for (int i = 0; i < width; i++) {
-    for (int j = 0; j < height; j++) {
-      boardArray[i][j] = 0;
+  for (int i = 0; i < width_; i++) {
+    for (int j = 0; j < height_; j++) {
+      board_array_[i][j] = 0;
     }
   }
 }
 
-int Board::GetBoardArray(int i, int j) {
-  return boardArray[i][j];
+int Board::GetBoardArray(int row, int col) {
+  return board_array_[row][col];
 }
-void Board::SetBoardArray(int i, int j, int value) {
-  boardArray[i][j] = value;
+void Board::SetBoardArray(int row, int col, int value) {
+  board_array_[row][col] = value;
 }
 bool Board::DetectDownwardCollision(int tetromino, Location loc) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetromino_.GetTetrominoType(tetromino, x, y) == 1) {
-        int toCheckCol = (loc.Col() / 40) + y + 1;
-        int toCheckRow = (loc.Row() / 40) + x;
-        if (boardArray[toCheckRow][toCheckCol] != 0) {
+        int toCheckCol = (loc.Col() / kTileSize) + y + 1;
+        int toCheckRow = (loc.Row() / kTileSize) + x;
+        if (board_array_[toCheckRow][toCheckCol] != 0) {
           return true;
         }
       }
@@ -43,9 +56,9 @@ bool Board::DetectLeftwardCollision(int tetromino, Location loc) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetromino_.GetTetrominoType(tetromino, x, y) == 1) {
-        int toCheckCol = (loc.Col() / 40) + y;
-        int toCheckRow = (loc.Row() / 40) + x - 1;
-        if (boardArray[toCheckRow][toCheckCol] != 0) {
+        int toCheckCol = (loc.Col() / kTileSize) + y;
+        int toCheckRow = (loc.Row() / kTileSize) + x - 1;
+        if (board_array_[toCheckRow][toCheckCol] != 0) {
           return true;
         }
       }
@@ -57,9 +70,9 @@ bool Board::DetectRightwardCollision(int tetromino, Location loc) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetromino_.GetTetrominoType(tetromino, x, y) == 1) {
-        int toCheckCol = (loc.Col() / 40) + y;
-        int toCheckRow = (loc.Row() / 40) + x + 1;
-        if (boardArray[toCheckRow][toCheckCol] != 0) {
+        int toCheckCol = (loc.Col() / kTileSize) + y;
+        int toCheckRow = (loc.Row() / kTileSize) + x + 1;
+        if (board_array_[toCheckRow][toCheckCol] != 0) {
           return true;
         }
       }
@@ -67,52 +80,58 @@ bool Board::DetectRightwardCollision(int tetromino, Location loc) {
   }
   return false;
 }
-void Board::deleteLine(int pY) {
-  int BOARD_WIDTH = 10;
+void Board::DeleteLine(int pY) {
   for (int j = pY; j > 0; j--)
   {
-    for (int i = 0; i < BOARD_WIDTH; i++)
+    for (int i = 0; i < width_; i++)
     {
-      boardArray[i][j] = boardArray[i][j-1];
+      board_array_[i][j] = board_array_[i][j-1];
     }
   }
 }
 void Board::DeletePossibleLines ()
 {
-  int BOARD_HEIGHT = 20;
-  int BOARD_WIDTH = 10;
-  for (int j = 0; j < BOARD_HEIGHT; j++)
+  for (int j = 0; j < height_; j++)
   {
     int i = 0;
-    while (i < BOARD_WIDTH)
+    while (i < width_)
     {
-      if (boardArray[i][j] == 0) break;
+      if (board_array_[i][j] == 0) break;
       i++;
     }
-    if (i == BOARD_WIDTH) {
-      deleteLine (j);
-      linesCleared++;
-      linesClearedTotal += 1;
+    if (i == width_) {
+      DeleteLine (j);
+      lines_cleared_++;
+      lines_cleared_total_ += 1;
     }
 
   }
 }
 bool Board::CheckGameEnd() {
-  for (int i = 0; i < width; i++) {
-    if (boardArray[i][0] != 0) {
+  for (int i = 0; i < width_; i++) {
+    if (board_array_[i][0] != 0) {
       return true;
     }
   }
   return false;
 }
 int Board::GetLinesCleared() {
-  return linesCleared;
+  return lines_cleared_;
 }
 int Board::GetLinesClearedTotal() const {
-  return linesClearedTotal;
+  return lines_cleared_total_;
 }
 
 void Board::SetLinesCleared(int setLinesCleared) {
-  linesCleared = setLinesCleared;
+  lines_cleared_ = setLinesCleared;
 }
-}  // namespace mylibrary
+int Board::GetWidth() const {
+  return width_;
+}
+int Board::GetHeight() const {
+  return height_;
+}
+int Board::GetScore() const {
+  return score_;
+}
+}  // namespace tetris

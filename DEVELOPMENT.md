@@ -21,5 +21,8 @@
     - Improved graphics and added individual colors
 - **4/28/20**
     - Implemented collision 
-    - Added a constant drop rate of tetromino         
+    - Added a constant drop rate of tetromino 
+- **4/29/20**
+    - Fixed sideways collision
+            
      

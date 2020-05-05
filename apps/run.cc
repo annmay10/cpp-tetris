@@ -16,7 +16,7 @@ using cinder::app::RendererGl;
 using std::string;
 using std::vector;
 
-namespace myapp {
+namespace tetrisapp {
 
 DEFINE_uint32(level, 1, "the number of tiles in each row and column");
 DEFINE_string(name, "CS126SP20", "the name of the player");
@@ -47,10 +47,10 @@ void SetUp(App::Settings* settings) {
 }
 
 
-}  // namespace myapp
+}  // namespace tetrisapp
 
 
 // This is a macro that runs the application.
-CINDER_APP(myapp::MyApp,
-           RendererGl(RendererGl::Options().msaa(myapp::kSamples)),
-           myapp::SetUp)
+CINDER_APP(tetrisapp::TetrisApp,
+           RendererGl(RendererGl::Options().msaa(tetrisapp::kSamples)),
+           tetrisapp::SetUp)

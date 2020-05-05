@@ -1,14 +1,14 @@
 //
 // Created by Annmay on 22/04/20.
 //
-#include <mylibrary/leaderboard.h>
-#include <mylibrary/player.h>
+#include <tetris/leaderboard.h>
+#include <tetris/player.h>
 #include <string>
 #include<vector>
 
 #include "../cmake-build-debug/_deps/sqlite-modern-cpp-src/hdr/sqlite_modern_cpp.h"
 
-namespace mylibrary {
+namespace tetris {
 using std::string;
 using std::vector;
 LeaderBoard::LeaderBoard(const string &db_path) : db_{db_path} {
@@ -20,8 +20,8 @@ LeaderBoard::LeaderBoard(const string &db_path) : db_{db_path} {
 
 void LeaderBoard::AddScoreToLeaderBoard(const Player& player) {
   db_ << "insert into leaderboard (name, score) values (?, ?);"
-      << player.name
-      << player.score;
+      << player.name_
+      << player.score_;
 }
 
 vector<Player> GetPlayers(sqlite::database_binder* rows) {
@@ -44,7 +44,7 @@ vector<Player> LeaderBoard::RetrieveHighScores(const size_t limit) {
 
 vector<Player> LeaderBoard::RetrieveHighScores(const Player& player,
                                                const size_t limit) {
-  auto rows = db_ << "select name, score from leaderboard where name = ? order by score desc limit ? ;" << player.name << limit;
+  auto rows = db_ << "select name, score from leaderboard where name = ? order by score desc limit ? ;" << player.name_ << limit;
   return GetPlayers(&rows);
 }
 }

@@ -1,11 +1,11 @@
 //
 // Created by Annmay on 22/04/20.
 //
-#include<mylibrary/tetrominos.h>
+#include<tetris/tetrominos.h>
 #include <curses.h>
 #include <cinder/Color.h>
 using cinder::Color;
-namespace mylibrary {
+namespace tetris {
 char mPieces[7][4][4] = {
     //I
     {
