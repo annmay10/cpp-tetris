@@ -4,7 +4,7 @@ Author: Annmay Sharma
 
 ---
 
-Final Project proposal : Tetris 
+#### Final Project proposal : Tetris 
 
 Annmay Sharma
 
@@ -40,28 +40,28 @@ Try to add items to the game which could have different functionalities.
 
 # Timeline
 
-Week 1
+### Week 1
 
-Design the tiles and load image files if needed
+- Design the tiles and load image files if needed
 
-Implement background audio
+- Implement background audio
 
-Set up initial database for high-scores
+- Set up initial database for high-scores
 
-Set up keys and functionality to move the blocks
+- Set up keys and functionality to move the blocks
 
-Week 2 
+### Week 2 
 
-Implement the hard-drop functionality and functionality to clear a tetris
+- Implement the hard-drop functionality and functionality to clear a tetris
 
-Implement audio for a tetris
+- Implement audio for a tetris
 
-Making extra levels as the user progresses to increase difficulty and the speed with which the blocks drop (also increase the speed of the background music)
+- Making extra levels as the user progresses to increase difficulty and the speed with which the blocks drop (also increase the speed of the background music)
 
-Week 3
+### Week 3
 
-Polish up the code
+- Polish up the code
 
-Implement high-score tables
+- Implement high-score tables
 
-Implement a menu
+- Implement a menu
