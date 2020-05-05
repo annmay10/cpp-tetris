@@ -19,16 +19,45 @@ class Board {
   int GetScore() const;
   int GetWidth() const;
   int GetHeight() const;
+  /**
+   * Updates the score according to the level the user is in
+   * @param level The current level of the user
+   */
   void UpdateScore(int level);
+  /**
+   * Deletes lines which are full
+   */
   void DeletePossibleLines();
+  /**
+   *
+   * @param tetromino the piece type
+   * @param loc the current location of the piece
+   * @return If the tetromino will collide with another tetromino placed below
+   */
   bool DetectDownwardCollision(int tetromino, Location loc);
+  /**
+   *
+   * @param tetromino the piece type
+   * @param loc the current location of the piece
+   * @return If the tetromino will collide with another tetromino placed on the right
+   */
   bool DetectRightwardCollision(int tetromino, Location loc);
+  /**
+   *
+   * @param tetromino the piece type
+   * @param loc the current location of the piece
+   * @return If the tetromino will collide with another tetromino placed on the left
+   */
   bool DetectLeftwardCollision(int tetromino, Location loc);
   int GetLinesCleared();
   int GetLinesClearedTotal() const;
   void SetLinesCleared(int setLinesCleared);
   int GetBoardArray(int row, int col);
   void SetBoardArray(int row, int col, int value);
+  /**
+   * Returns true (game is over) if the board's top most row has a block
+   * @return if the game is over
+   */
   bool CheckGameEnd();
   Board();
 };

@@ -1,6 +1,6 @@
-// Copyright (c) 2020 [Your Name]. All rights reserved.
+// Copyright (c) 2020 [Annmay Sharma3]. All rights reserved.
 
-#include "my_app.h"
+#include "tetris_app.h"
 #include <cinder/Font.h>
 #include <cinder/Text.h>
 #include <cinder/app/App.h>
@@ -52,11 +52,9 @@ TetrisApp::TetrisApp() :
     {}
 
 void TetrisApp::setup() {
-  /*cinder::Rand::randomize();
-  current = cinder::Rand::randInt(0, 7);
-  next = cinder::Rand::randInt(0,7);*/
   menu_image = cinder::gl::Texture2d::create(loadImage(loadAsset("tetris-logo.jpg")));
   SetUpMusic();
+  //Starts the playing the background music
   if (!theme_song_->isPlaying()) {
     theme_song_->start();
   }
@@ -72,16 +70,20 @@ void TetrisApp::update() {
       tetris::Player current_player = tetris::Player(player_name_, board_.GetScore());
       //Returns a vector of the scores of the current player
       current_player_scores_ = leader_board_.RetrieveHighScores(current_player, kLimit);
-      // It is crucial the this vector be populated, given that `limit` > 0.
       assert(!top_players_.empty());
     }
     return;
   }
+  //Checks if the current tetromino has hit the bottom or collided with another tetromino that is already placed
   if (is_bottom_ || is_collided_) {
+    //changes the tetromino to the next piece
     current_ = next_;
+    //randomizes for a truly random piece
     cinder::Rand::randomize();
     next_ = cinder::Rand::randInt(0,7);
+    //Changes the location so that the new tetromino can fall from the top of the screen
     location_ = tetris::Location(80.0, 0.0);
+    //Changes the booleans that check if the tetromino has reached the bottom or collided back to false
     is_bottom_ = false;
     is_collided_ = false;
   }
@@ -93,21 +95,25 @@ void TetrisApp::update() {
           .count();
   //Converts milliseconds to seconds
   elapsed_time /= 1000.0;
-  long dropDelay = long(2.0) - (0.2 * level_);
-  if (elapsed_time >= dropDelay && state_ == GameState::kPlaying) {
+  //Drop delay decreases as the level goes higher
+  long drop_delay = long(2.0) - (0.2 * level_);
+  if (elapsed_time >= drop_delay && state_ == GameState::kPlaying) {
     DownwardMovement();
     last_time_ = time;
   }
   board_.DeletePossibleLines();
   PlayMusic();
   board_.UpdateScore(level_);
+  //Restarts the background music once it is over
   if (!theme_song_->isPlaying()) {
     theme_song_->start();
   }
+  //Changes the flag so that the level can increase only the next time the lines cleared is divisible by 30 (level increases once for ever 30 lines cleared)
   if ((board_.GetLinesClearedTotal() % 30) != 0) {
     flag_ = false;
   }
   if (board_.GetLinesClearedTotal() % 30 == 0 && (board_.GetLinesClearedTotal() != 0) && !flag_) {
+    //Ensures a max level of 19
     if (level_ < 20) {
       level_ += 1;
       flag_ = true;
@@ -191,9 +197,11 @@ void TetrisApp::DrawBackground() const {
 void TetrisApp::DrawNext() {
   int xBlockSize = 4;
   int yBlockSize = 4;
+  //Goes through the tetromino 2-d array to check the shape of the piece
   for (int x = 0; x < xBlockSize; x++) {
     for (int y = 0; y < yBlockSize; y++) {
       if (tetromino_.GetTetrominoType(next_, x, y) == 1) {
+        //Gives a constant position for the next piece and draws the next piece there
         int drawRow = 410 + (kTileSize * x);
         int drawCol = 200 + (kTileSize * y);
         cinder::gl::color(tetromino_.GetColorType(next_, 0),
@@ -201,6 +209,7 @@ void TetrisApp::DrawNext() {
                           tetromino_.GetColorType(next_, 2));
         cinder::gl::drawSolidRect(cinder::Rectf(drawRow, drawCol, drawRow + kTileSize, drawCol + kTileSize));
       } else {
+        //Surrounds the piece with black so that the colours don't merge and its clear which block is next
         int drawRow = 410 + (kTileSize * x);
         int drawCol = 200 + (kTileSize * y);
         cinder::gl::color(0,0,0);
@@ -218,11 +227,14 @@ void TetrisApp::DrawNext() {
 void TetrisApp::DrawCurrent() {
   int xBlockSize = 4;
   int yBlockSize = 4;
+  //Goes through the tetromino 2-d array to check the shape of the piece
   for (int x = 0; x < xBlockSize; x++) {
     for (int y = 0; y < yBlockSize; y++) {
       if (tetromino_.GetTetrominoType(current_, x, y) == 1) {
+        //Checks the current location and accordingly draws the piece depending on the piece type
         int drawRow = location_.Row() + (kTileSize * x);
         int drawCol = location_.Col() + (kTileSize * y);
+        //Colors according to the rbg values given in the colour array in tetromino.cpp
         cinder::gl::color(tetromino_.GetColorType(current_, 0),
                           tetromino_.GetColorType(current_, 1),
                           tetromino_.GetColorType(current_, 2));
@@ -232,6 +244,7 @@ void TetrisApp::DrawCurrent() {
         int drawCol = location_.Col() + (kTileSize * y);
         int matrixRow = drawRow / kTileSize;
         int matrixCol = drawCol / kTileSize;
+        //Draws the surrounding 'blocks' of the 2-d array as black as long as it is not occupied in the board
         if (board_.GetBoardArray(matrixRow, matrixCol) == 0) {
           cinder::gl::color(0, 0, 0);
           cinder::gl::drawSolidRect(cinder::Rectf(drawRow, drawCol, drawRow + kTileSize, drawCol + kTileSize));
@@ -241,10 +254,12 @@ void TetrisApp::DrawCurrent() {
   }
 }
 void TetrisApp::DrawOccupied() {
-  //cinder::gl::clear();
+  //Checks the board piece by piece
   for (int x = 0; x < board_.GetWidth(); x++) {
     for (int y = 0; y < board_.GetHeight(); y++) {
+      //If the board contains a block
       if (board_.GetBoardArray(x, y) != 0) {
+        //Gets the piece type as it is stored as (the index of the pieces array + 1)
         int pType = board_.GetBoardArray(x, y) - 1;
         int drawRow2 = (kTileSize * x);
         int drawCol2 = (kTileSize * y);
@@ -257,9 +272,7 @@ void TetrisApp::DrawOccupied() {
   }
 }
 void TetrisApp::DrawGameOver() {
-  // Lazily print.
-  //if (printed_game_over_) return;
-  //if (top_players_.empty()) return;
+  if (top_players_.empty()) return;
 
   const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {500, 50};
@@ -332,39 +345,47 @@ void TetrisApp::SetUpMusic() {
   cinder::audio::SourceFileRef source_file_tetris = cinder::audio::load( cinder::app::loadAsset( "tetris_cleared.wav" ) );
   tetris_sound_ = cinder::audio::Voice::create( source_file_tetris );
 }
+
 void TetrisApp::DownwardMovement() {
   //int tile_size = 40;
   int southernmost = tetromino_.GetSouthernmostPoint(current_);
   int limit = 800 - ((southernmost + 1) * kTileSize);
+  //Checks if the block is within limits and if it will not undergo a downward collision
   if (location_.Col() < limit && (!board_.DetectDownwardCollision(current_, location_))) {
     location_.IncrementCol();
   } else if (location_.Col() >= limit) {
     is_bottom_ = true;
+    //Goes through the tetromino 2-d array to check the shape of the piece
     for (int x = 0; x < 4; x++) {
       for (int y = 0; y < 4; y++) {
         if (tetromino_.GetTetrominoType(current_, x, y) == 1) {
           int RowOccupied = location_.Row() / kTileSize + x;
           int ColOccupied = location_.Col() / kTileSize + y;
+          //Updates the tetromino onto the board
           board_.SetBoardArray(RowOccupied, ColOccupied, (current_ + 1));
         }
       }
     }
   } else if (board_.DetectDownwardCollision(current_, location_)) {
     is_collided_ = true;
+    //Goes through the tetromino 2-d array to check the shape of the piece
     for (int x = 0; x < 4; x++) {
       for (int y = 0; y < 4; y++) {
         if (tetromino_.GetTetrominoType(current_, x, y) == 1) {
           int RowOccupied = location_.Row() / kTileSize + x;
           int ColOccupied = location_.Col() / kTileSize + y;
+          //Updates the tetromino onto the board
           board_.SetBoardArray(RowOccupied, ColOccupied, (current_ + 1));
         }
       }
     }
   }
 }
+
 void TetrisApp::HardDrop() {
   int southernmost = tetromino_.GetSouthernmostPoint(current_);
   int limit = 800 - ((southernmost + 1) * kTileSize);
+  //Keeps going down until it is at the bottom or there is a downward collision
   while(location_.Col() < limit && (!is_collided_) && (!is_bottom_) && (state_ == GameState::kPlaying)) {
     DownwardMovement();
   }
@@ -377,24 +398,25 @@ void TetrisApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_UP: {
+      //If there is a block surriounding the current one, tetromino should not rotate
       if (board_.DetectRightwardCollision(current_, location_) || board_.DetectLeftwardCollision(current_, location_)) {
         break;
       }
       tetromino_.RotateTetromino(current_);
-      //int tile_size = 40;
       int southernmost = tetromino_.GetSouthernmostPoint(current_);
       int limitDown = 800 - ((southernmost + 1) * kTileSize);
       int eastmost = tetromino_.GetEastmostPoint(current_);
       int westmost = tetromino_.GetWestmostPoint(current_);
       int limitRight = 400 - ((eastmost + 1) * kTileSize);
       int limitLeft = (0 - ((westmost) * kTileSize));
+      //Checks if the block's location is valid or not after the rotation, if not rotates it back to normal
       if (location_.Row() > limitRight || location_.Row() < limitLeft || location_.Col() > limitDown) {
         tetromino_.RotateTetrominoCounterClockwise(current_);
       }
       break;
     }
     case KeyEvent::KEY_RIGHT: {
-      //int tile_size = 40;
+      //Moves tile to the right if it is within screen boundaries
       int eastmost = tetromino_.GetEastmostPoint(current_);
       int limit = 400 - ((eastmost + 1) * kTileSize);
       if (location_.Row() < limit && (!board_.DetectRightwardCollision(current_, location_))) {
@@ -403,7 +425,7 @@ void TetrisApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_LEFT: {
-
+      //Moves tile to the left if it is within screen boundaries
       int westmost = tetromino_.GetWestmostPoint(current_);
       int limit = (0 - ((westmost) * kTileSize));
       if (location_.Row() > limit && (!board_.DetectLeftwardCollision(current_, location_))) {

@@ -8,7 +8,7 @@
 #include <cinder/app/RendererGl.h>
 #include <gflags/gflags.h>
 
-#include "my_app.h"
+#include "tetris_app.h"
 
 
 using cinder::app::App;

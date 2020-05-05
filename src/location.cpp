@@ -3,6 +3,7 @@
 //
 #include <tetris/location.h>
 namespace tetris {
+const int kTileSize = 40;
 Location::Location(int row, int col) : row_(row), col_(col) {}
 int Location::Row() const {
   return row_;
@@ -11,13 +12,13 @@ int Location::Col() const {
   return col_;
 }
 void Location::IncrementRow() {
-  row_ += 40;
+  row_ += kTileSize;
 }
 void Location::DecrementRow() {
-  row_ -= 40;
+  row_ -= kTileSize;
 }
 void Location::IncrementCol() {
-  col_ += 40;
+  col_ += kTileSize;
 }
 }
 

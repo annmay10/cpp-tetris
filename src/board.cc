@@ -4,7 +4,7 @@
 #include<tetris/location.h>
 
 namespace tetris {
-int kTileSize = 40;
+const int kTileSize = 40;
 Board::Board() {
   score_ = 0;
   width_ = 10;
@@ -41,7 +41,9 @@ void Board::SetBoardArray(int row, int col, int value) {
 bool Board::DetectDownwardCollision(int tetromino, Location loc) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
+      //Gets the valid positions of the tetromino
       if (tetromino_.GetTetrominoType(tetromino, x, y) == 1) {
+        //Checks if the board array contains a block below the current tetromino
         int toCheckCol = (loc.Col() / kTileSize) + y + 1;
         int toCheckRow = (loc.Row() / kTileSize) + x;
         if (board_array_[toCheckRow][toCheckCol] != 0) {
@@ -55,7 +57,9 @@ bool Board::DetectDownwardCollision(int tetromino, Location loc) {
 bool Board::DetectLeftwardCollision(int tetromino, Location loc) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
+      //Gets the valid positions of the tetromino
       if (tetromino_.GetTetrominoType(tetromino, x, y) == 1) {
+        //Checks if the board array contains a block to the left of the current tetromino
         int toCheckCol = (loc.Col() / kTileSize) + y;
         int toCheckRow = (loc.Row() / kTileSize) + x - 1;
         if (board_array_[toCheckRow][toCheckCol] != 0) {
@@ -69,7 +73,9 @@ bool Board::DetectLeftwardCollision(int tetromino, Location loc) {
 bool Board::DetectRightwardCollision(int tetromino, Location loc) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
+      //Checks the valid positions of the tetromino
       if (tetromino_.GetTetrominoType(tetromino, x, y) == 1) {
+        //Checks if the board array contains a block to the right of the current tetromino
         int toCheckCol = (loc.Col() / kTileSize) + y;
         int toCheckRow = (loc.Row() / kTileSize) + x + 1;
         if (board_array_[toCheckRow][toCheckCol] != 0) {
@@ -99,16 +105,18 @@ void Board::DeletePossibleLines ()
       if (board_array_[i][j] == 0) break;
       i++;
     }
+    //Checks if an entire line is full
     if (i == width_) {
       DeleteLine (j);
       lines_cleared_++;
-      lines_cleared_total_ += 1;
+      lines_cleared_total_++;
     }
 
   }
 }
 bool Board::CheckGameEnd() {
   for (int i = 0; i < width_; i++) {
+    //If there is a single block at the top of the screen the game is over
     if (board_array_[i][0] != 0) {
       return true;
     }

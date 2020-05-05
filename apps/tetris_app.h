@@ -25,18 +25,36 @@ class TetrisApp : public cinder::app::App {
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
  private:
+  /**
+   * Sets up the audio files
+   */
   void SetUpMusic();
+  /**
+   * Checks the necessary conditions for a vaid downward movement of a tetromino
+   */
   void DownwardMovement();
   void DrawMenu() const;
+  /**
+   * Draws the current dropping tetromino
+   */
   void DrawCurrent();
+  /**
+   * Draws the occupied blocks of the board
+   */
   void DrawOccupied();
   void DrawScore() const;
   void DrawLevel() const;
   void DrawLinesCleared() const;
+  /**
+   * Draws the side bar on which score, lines cleared, level and the next block are drawn
+   */
   void DrawBackground() const;
   void DrawNext();
   void DrawGameOver();
   void PlayMusic();
+  /**
+   * Hard-drops the tetromino until it detects a downward collision or reaches the bottom of the screen
+   */
   void HardDrop();
   std::chrono::time_point<std::chrono::system_clock> last_time_;
   tetris::LeaderBoard leader_board_;
@@ -59,7 +77,6 @@ class TetrisApp : public cinder::app::App {
   cinder::audio::VoiceRef triple_sound_;
   cinder::audio::VoiceRef tetris_sound_;
   cinder::audio::VoiceRef level_sound_;
-
 };
 
 }  // namespace myapp
