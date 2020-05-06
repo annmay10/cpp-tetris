@@ -5,7 +5,7 @@
 
 
 
-**Author**: Annmay Sharma - [`annmays2@illinois.edu`](mailto:annmays2@illinois.edu)
+
 ![](https://imgur.com/0Ib7ZOq.png)
 ![](https://imgur.com/1HfxVfb.pngk)
 
@@ -41,3 +41,5 @@ champion!
 | `down arrow`      | Move tetromino down                                                        |
 | `up arrow`     | Rotate tetromino  
 | `space bar`      | Hard Drop
+
+**Author**: Annmay Sharma - [`annmays2@illinois.edu`](mailto:annmays2@illinois.edu)

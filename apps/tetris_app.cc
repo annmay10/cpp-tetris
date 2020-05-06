@@ -305,7 +305,7 @@ void TetrisApp::DrawMenu() const {
   const cinder::ivec2 size = {500, 100};
   const Color color = {0,0.6,1};
   std::stringstream ss;
-  ss << "Welcome to tetris  \n Press Enter to play";
+  ss << "Welcome to Tetris!  \n Press Enter to play";
   PrintText(ss.str(), color, size, {center.x, center.y});
 }
 void TetrisApp::PlayMusic() {

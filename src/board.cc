@@ -32,7 +32,7 @@ void Board::InstantiateBoard() {
   }
 }
 
-int Board::GetBoardArray(int row, int col) {
+int Board::GetBoardArray(int row, int col) const {
   return board_array_[row][col];
 }
 void Board::SetBoardArray(int row, int col, int value) {

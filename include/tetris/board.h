@@ -52,7 +52,7 @@ class Board {
   int GetLinesCleared();
   int GetLinesClearedTotal() const;
   void SetLinesCleared(int setLinesCleared);
-  int GetBoardArray(int row, int col);
+  int GetBoardArray(int row, int col) const;
   void SetBoardArray(int row, int col, int value);
   /**
    * Returns true (game is over) if the board's top most row has a block
