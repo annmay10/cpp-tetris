@@ -49,4 +49,8 @@
     - Added menu and displayed picture
     - Refactored variable, class and namesapace names
     - Added variables for magic numbers    
+    - Added necessary comments to app functionality
+- **05/06/20**
+    - Updated README.md
+    - Added necessary comments to tests
      
